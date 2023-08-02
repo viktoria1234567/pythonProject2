@@ -1,0 +1,27 @@
+{
+  "(2, 'wert', True)": [
+    2,
+    "wert",
+    true
+  ],
+  "reg": 8,
+  "funs": "ewww",
+  "result": [
+    [
+      233,
+      "round",
+      false
+    ],
+    {
+      "upper": 3699,
+      "region": "sun"
+    }
+  ],
+  "(233, 'round', False)": [
+    233,
+    "round",
+    false
+  ],
+  "upper": 3699,
+  "region": "sun"
+}
