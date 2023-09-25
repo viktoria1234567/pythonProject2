@@ -1,0 +1,11 @@
+address: https://test-stand.gb.ru
+#driver_path: chromedriver.exe
+sleep_time: 10
+browser: chrome
+
+login: '565'
+pswd: 'cbcb58ac2e'
+
+title: Beautiful cat
+description: Very beautiful cat
+content: There is a beautiful cat
