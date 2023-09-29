@@ -1,0 +1,14 @@
+address: https://test-stand.gb.ru
+browser: chrome
+sleep_time: 1
+
+login: '565'
+pswd: 'cbcb58ac2e'
+
+title: Beautiful cat
+description: Very beautiful cat
+content: There is a beautiful cat
+
+name: Vika
+email: vpredko@mail.ru
+contact_content: beautiful
