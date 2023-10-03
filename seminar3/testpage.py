@@ -1,127 +1,122 @@
-import time
-
+import time, yaml
 from BaseApp import BasePage
 from selenium.webdriver.common.by import By
 import logging
 
-
-class TestSeacrhLocators:
-    LOCATOR_LOGIN_FIELD = (By.XPATH, """//*[@id="login"]/div[1]/label/input""")
-    LOCATOR_PASS_FIELD = (By.XPATH, """//*[@id="login"]/div[2]/label/input""")
-    LOCATOR_LOGIN_BTN = (By.CSS_SELECTOR, "button")
-    LOCATOR_ERROR_FIELD = (By.XPATH, """//*[@id="app"]/main/div/div/div[2]/h2""")
-    LOCATOR_SUCCESS = (By.XPATH, """//*[@id="app"]/main/nav/ul/li[3]/a""")
-    LOCATOR_ADD_POST = (By.XPATH, """//*[@id="create-btn"]""")
-    LOCATOR_TITLE_POST = (By.XPATH, """//*[@id="create-item"]/div/div/div[1]/div/label/input""")
-    LOCATOR_DESCRIPTION_POST = (By.XPATH, """//*[@id="create-item"]/div/div/div[2]/div/label/span/textarea""")
-    LOCATOR_CONTENT_POST = (By.XPATH, """//*[@id="create-item"]/div/div/div[3]/div/label/span/textarea""")
-    LOCATOR_SAVE_POST = (By.XPATH, """//*[@id="create-item"]/div/div/div[7]/div/button""")
-    LOCATOR_FIND_NEW_POST = (By.XPATH, """//*[@id="app"]/main/div/div[1]/h1""")
-    LOCATOR_CONTACT_US = (By.XPATH, """//*[@id="app"]/main/nav/ul/li[2]/a""")
-    LOCATOR_CONTACT_NAME = (By.XPATH, """//*[@id="contact"]/div[1]/label/input""")
-    LOCATOR_CONTACT_EMAIL = (By.XPATH, """//*[@id="contact"]/div[2]/label/input""")
-    LOCATOR_CONTACT_CONTENT = (By.XPATH, """//*[@id="contact"]/div[3]/label/span/textarea""")
-    LOCATOR_CONTACT_BUTTON = (By.XPATH, """//*[@id="contact"]/div[4]/button""")
+ids = dict()
+with open("./locators.yaml") as f:
+    locators = yaml.safe_load(f)
+for locator in locators["xpath"].keys():
+    ids[locator] = (By.XPATH, locators["xpath"][locator])
+for locator in locators["css"].keys():
+    ids[locator] = (By.CSS_SELECTOR, locators["css"][locator])
 
 
 class OperationsHelper(BasePage):
+    def enter_text_into_field(self, locator, word, description=None):
+        if description:
+            element_name = description
+        else:
+            element_name = locator
+        logging.debug(f"Send '{word}' to element {element_name}")
+        field = self.find_element(locator)
+        if not field:
+            logging.error(f"Element {locator} not found")
+            return False
+        try:
+            field.clear()
+            field.send_keys(word)
+        except:
+            logging.exception(f"Exception while operate with {locator}")
+            return False
+        return True
+
+    def get_text_from_element(self, locator, description=None):
+        if description:
+            element_name = description
+        else:
+            element_name = locator
+        field = self.find_element(locator, time=2)
+        if not field:
+            return None
+        try:
+            text = field.text
+        except:
+            logging.exception(f"Exception while get text from {element_name}")
+            return None
+        logging.debug(f"We find text {text} in field {element_name}")
+        return text
+
+    def click_button(self, locator, description=None):
+        if description:
+            element_name = description
+        else:
+            element_name = locator
+        button = self.find_element(locator)
+        if not button:
+            return False
+        try:
+            button.click()
+        except:
+            logging.exception("Exception with click")
+            return False
+        logging.debug(f"Clicked {element_name} button")
+        return True
+
+    # ENTER TEXT
     def enter_login(self, word):
-        logging.info(f"Send '{word}' to element {TestSeacrhLocators.LOCATOR_LOGIN_FIELD[1]}")
-        login_field = self.find_element(TestSeacrhLocators.LOCATOR_LOGIN_FIELD)
-        login_field.clear()
-        login_field.send_keys(word)
+        self.enter_text_into_field(ids["LOCATOR_LOGIN_FIELD"], word, description="login form")
 
     def enter_pass(self, word):
-        logging.info(f"Send '{word}' to element {TestSeacrhLocators.LOCATOR_PASS_FIELD[1]}")
-        pass_field = self.find_element(TestSeacrhLocators.LOCATOR_PASS_FIELD)
-        pass_field.clear()
-        pass_field.send_keys(word)
+        self.enter_text_into_field(ids["LOCATOR_PASS_FIELD"], word, description="password form")
 
-    def click_login_button(self):
-        logging.info("Click login button")
-        self.find_element(TestSeacrhLocators.LOCATOR_LOGIN_BTN).click()
+    def add_title(self, string):
+        self.enter_text_into_field(ids["LOCATOR_TITLE"], string, description="title")
+
+    def add_description(self, string):
+        self.enter_text_into_field(ids["LOCATOR_DESCRIPTION"], string, description="description")
+
+    def add_content(self, string):
+        self.enter_text_into_field(ids["LOCATOR_CONTENT"], string, description="description")
+
+    def add_name(self, string):
+        self.enter_text_into_field(ids["LOCATOR_CONTACT_NAME"], string, description="contact_name")
+
+    def add_email(self, string):
+        self.enter_text_into_field(ids["LOCATOR_CONTACT_EMAIL"], string, description="contact_email")
+
+    def add_contact_content(self, string):
+        self.enter_text_into_field(ids["LOCATOR_CONTACT_CONTENT"], string, description="contact_content")
+
+# GET TEXT
+    def new_post_title(self):
+        return self.get_text_from_element(ids["LOCATOR_FIND_NEW_POST"], description="new_post_title")
 
     def get_error_text(self):
-        logging.info(f"Start find error text")
-        error_field = self.find_element(TestSeacrhLocators.LOCATOR_ERROR_FIELD, time=2)
-        text = error_field.text
-        logging.info(f"We find text '{text}' in error field {TestSeacrhLocators.LOCATOR_ERROR_FIELD[1]}")
-        return text
+        return self.get_text_from_element(ids["LOCATOR_ERROR_FIELD"], description="error label")
 
     def login_success(self):
-        logging.info(f"Start find success text")
-        success_field = self.find_element(TestSeacrhLocators.LOCATOR_SUCCESS, time=2)
-        text = success_field.text
-        logging.info(f"We find text '{text}' in login field {TestSeacrhLocators.LOCATOR_SUCCESS[1]}")
-        return text
+        return self.get_text_from_element(ids["LOCATOR_HELLO"], description="username")
+
+    def get_alert_message(self):
+        time.sleep(2)
+        logging.info("Get alert message")
+        txt = self.get_alert_text()
+        logging.debug(f"Alert message is {txt}")
+        return txt
+
+# CLICK
+    def click_save_button(self):
+        self.click_button(ids["LOCATOR_SAVE_BTN"], description="save")
 
     def click_add_post_button(self):
-        logging.info("Click add post button")
-        self.find_element(TestSeacrhLocators.LOCATOR_ADD_POST).click()
+        self.click_button(ids["LOCATOR_NEW_POST_BTN"], description="new post")
 
-    def add_title(self, title):
-        time.sleep(1)
-        logging.info(f"Send '{title}' to element {TestSeacrhLocators.LOCATOR_TITLE_POST[1]}")
-        title_field = self.find_element(TestSeacrhLocators.LOCATOR_TITLE_POST)
-        title_field.clear()
-        title_field.send_keys(title)
-
-    def add_description(self, description):
-        logging.info(f"Send '{description}' to element {TestSeacrhLocators.LOCATOR_DESCRIPTION_POST[1]}")
-        description_field = self.find_element(TestSeacrhLocators.LOCATOR_DESCRIPTION_POST)
-        description_field.clear()
-        description_field.send_keys(description)
-
-    def add_content(self, content):
-        logging.info(f"Send '{content}' to element {TestSeacrhLocators.LOCATOR_CONTENT_POST[1]}")
-        content_field = self.find_element(TestSeacrhLocators.LOCATOR_CONTENT_POST)
-        content_field.clear()
-        content_field.send_keys(content)
-
-    def click_save_post_button(self):
-        logging.info("Click save post button")
-        self.find_element(TestSeacrhLocators.LOCATOR_SAVE_POST).click()
-
-    def find_new_post_title(self):
-        logging.info("Start find new post")
-        time.sleep(1)
-        new_post_field = self.find_element(TestSeacrhLocators.LOCATOR_FIND_NEW_POST, time=2)
-        text = new_post_field.text
-        logging.info(f"We find new post title '{text}' in field {TestSeacrhLocators.LOCATOR_SUCCESS[1]}")
-        return text
+    def click_contact(self):
+        self.click_button(ids["LOCATOR_CONTACT_SEND"], description="contact")
 
     def click_contact_button(self):
-        logging.info("Click contact button")
-        self.find_element(TestSeacrhLocators.LOCATOR_CONTACT_US).click()
+        self.click_button(ids["LOCATOR_CONTACT_BTN"], description="send")
 
-    def add_name(self, name):
-        time.sleep(1)
-        logging.info(f"Send '{name}' to element {TestSeacrhLocators.LOCATOR_CONTACT_NAME[1]}")
-        name_field = self.find_element(TestSeacrhLocators.LOCATOR_CONTACT_NAME)
-        name_field.clear()
-        name_field.send_keys(name)
-
-    def add_email(self, email):
-        time.sleep(1)
-        logging.info(f"Send '{email}' to element {TestSeacrhLocators.LOCATOR_CONTACT_EMAIL[1]}")
-        email_field = self.find_element(TestSeacrhLocators.LOCATOR_CONTACT_EMAIL)
-        email_field.clear()
-        email_field.send_keys(email)
-
-    def add_contact_content(self, content):
-        time.sleep(1)
-        logging.info(f"Send '{content}' to element {TestSeacrhLocators.LOCATOR_CONTACT_CONTENT[1]}")
-        content_field = self.find_element(TestSeacrhLocators.LOCATOR_CONTACT_CONTENT)
-        content_field.clear()
-        content_field.send_keys(content)
-
-    def click_contact_us_button(self):
-        logging.info("Click contact us button")
-        self.find_element(TestSeacrhLocators.LOCATOR_CONTACT_BUTTON).click()
-
-    def get_alert(self):
-        time.sleep(1)
-        logging.info("Get alert text")
-        text = self.get_alert_text()
-        logging.info(text)
-        return text
+    def click_login_button(self):
+        self.click_button(ids["LOCATOR_LOGIN_BTN"], description="login")

@@ -9,6 +9,11 @@ title: Beautiful cat
 description: Very beautiful cat
 content: There is a beautiful cat
 
-name: Vika
-email: vpredko@mail.ru
-contact_content: beautiful
+u_name: Vika
+u_email: vpredko@mail.ru
+content_contact: beautiful
+
+url: https://test-stand.gb.ru/gateway/login
+api_address: https://test-stand.gb.ru/api/posts
+address_post: https://test-stand.gb.ru/gateway/posts
+not_me_title: TestTitle

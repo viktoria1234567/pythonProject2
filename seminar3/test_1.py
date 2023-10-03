@@ -1,3 +1,5 @@
+from time import sleep
+
 import yaml
 from testpage import OperationsHelper
 import logging
@@ -37,9 +39,10 @@ def test_add_post(browser):
     testpage.add_title(testdata["title"])
     testpage.add_description(testdata["description"])
     testpage.add_content(testdata["content"])
-    testpage.click_save_post_button()
-    testpage.find_new_post_title()
-    assert testpage.find_new_post_title() == f"{testdata['title']}", "test add post FAILED"
+    testpage.click_save_button()
+    sleep(1)
+    assert testpage.new_post_title() == f"{testdata['title']}", "test add post FAILED!"
+
 
 def test_contact_us(browser):
     logging.info("Test contact_us Starting")
@@ -48,9 +51,10 @@ def test_contact_us(browser):
     # testpage.enter_login(testdata["login"])
     # testpage.enter_pass(testdata["pswd"])
     # testpage.click_login_button()
+    sleep(1)
     testpage.click_contact_button()
-    testpage.add_name(testdata["name"])
-    testpage.add_email(testdata["email"])
-    testpage.add_contact_content(testdata["contact_content"])
-    testpage.click_contact_us_button()
-    assert testpage.get_alert() == "Form successfully submitted", "test contact us FAILED!"
+    testpage.add_name(testdata["u_name"])
+    testpage.add_email(testdata["u_email"])
+    testpage.add_contact_content(testdata["content_contact"])
+    testpage.click_contact()
+    assert testpage.get_alert_message() == "Form successfully submitted", "test contact us FAILED!"
