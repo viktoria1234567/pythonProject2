@@ -1,0 +1,9 @@
+css:
+  LOCATOR_FIELD_LOGIN: "#login > div:nth-child(1) > label > input"
+  LOCATOR_FIELD_PASS: "#login > div:nth-child(2) > label > input"
+  LOCATOR_BUTTON_LOGIN: "#login > div.submit.svelte-uwkxn9 > button > span"
+  LOCATOR_BUTTON_ABOUT: '#app > main > nav > ul > li:nth-child(1) > a'
+  LOCATOR_HEADER_ABOUT: '#app > main > div > div > h1'
+xpath:
+  LOCATOR_ACCESS_SUCCESS: '//*[@id="app"]/main/nav/ul/li[3]/a'
+  LOCATOR_ACCESS_ERROR: '//*[@id="app"]/main/div/div/div[2]/h2'

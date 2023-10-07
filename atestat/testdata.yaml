@@ -1,0 +1,5 @@
+login: '565'
+password: 'cbcb58ac2e'
+url_base: 'https://test-stand.gb.ru'
+url_get: 'https://test-stand.gb.ru/api/users/profile'
+url_auto: 'https://test-stand.gb.ru/gateway/login'
